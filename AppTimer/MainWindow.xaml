@@ -9,6 +9,8 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition> 
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -45,5 +47,26 @@
             <Button x:Name="ResetTimerButton" Click="ResetTimerButton_OnClick" Margin="0 0 5 0">Reset Timer</Button>
             <Button Grid.Column="1" Click="PauseButton_OnClick" Margin="5 0 0 0 ">Pause</Button>
         </Grid>
+        
+        <ui:SimpleStackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Margin="0 20 0 0" x:Name="SaveButton" Click="SaveButton_OnClick">Stop &amp; Save</Button>
+        </ui:SimpleStackPanel>
+        
+        <ListView Grid.Row="4" x:Name="HistoryList" Margin="10 10">
+            <ListView.View>
+                <GridView AllowsColumnReorder="True">
+                    <GridViewColumn Header="App Name" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                    <GridViewColumn Header="Duration" DisplayMemberBinding="{Binding Duration}"></GridViewColumn>
+                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding DateAdded}"></GridViewColumn>
+                    <GridViewColumn Header="Delete" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button x:Name="DeleteButton" Tag="{Binding Id}" Click="DeleteButton_OnClick" Background="Transparent"><ui:SymbolIcon Symbol="Delete"></ui:SymbolIcon></Button>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>
