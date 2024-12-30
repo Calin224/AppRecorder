@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
@@ -17,8 +18,6 @@ public partial class MainWindow : Window
     [DllImport("user32.dll")]
     private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int processId);
 
-    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
     private DispatcherTimer _dispatcherTimer;
     private TimeSpan _timeElapsed;
@@ -38,7 +37,7 @@ public partial class MainWindow : Window
 
         _timeElapsed = TimeSpan.Zero;
 
-        ActiveAppsList.ItemsSource = _activeApps;
+        ActiveAppsList.ItemsSource = _activeApps.Select(x => TitleCase(x));
         
         _dispatcherTimer = new DispatcherTimer();
         _dispatcherTimer.Interval = TimeSpan.FromSeconds(1); // intervalul dintre tick-uri
@@ -85,7 +84,7 @@ public partial class MainWindow : Window
         {
             if (P.MainWindowTitle.Length > 1)
             {
-                _activeApps.Add(P.ProcessName);
+                _activeApps.Add(new string(P.ProcessName.Where(c => char.IsLetter(c) || char.IsWhiteSpace(c)).ToArray()));
             }
         }
     }
@@ -126,8 +125,7 @@ public partial class MainWindow : Window
             TimerText.Content = _timeElapsed.ToString("c");
         }
         
-        System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Users\sandu\Documents\AppTimer\Assets\stop.wav");
-        player.Play();
+        PlaySound("stop");
     }
 
     private void PauseButton_OnClick(object sender, RoutedEventArgs e)
@@ -166,7 +164,7 @@ public partial class MainWindow : Window
             // reset the timer
             ResetTimer();
             
-            PlaySound("save");
+            PlaySound("sms");
             
             LoadHistory();
         }
@@ -212,5 +210,20 @@ public partial class MainWindow : Window
                 LoadHistory();
             }
         }
+    }
+
+    private string TitleCase(string s)
+    {
+        StringBuilder res = new StringBuilder();
+        
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (i == 0)
+                res.Append(s[i].ToString().ToUpper());
+            else
+                res.Append(s[i].ToString().ToLower());
+        }
+
+        return res.ToString();
     }
 }
