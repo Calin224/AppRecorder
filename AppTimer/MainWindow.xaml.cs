@@ -39,30 +39,7 @@ public partial class MainWindow : Window
         _timeElapsed = TimeSpan.Zero;
 
         ActiveAppsList.ItemsSource = _activeApps;
-
-        IntPtr foregroundWindowHandle = GetForegroundWindow();
-
-        if (foregroundWindowHandle == IntPtr.Zero)
-        {
-            Console.WriteLine("No window is currently focused.");
-            return;
-        }
-
-        GetWindowThreadProcessId(foregroundWindowHandle, out int foregroundProcessId);
-
-        if (ActiveAppsList.SelectedItem != null)
-        {
-            Process[] processes = Process.GetProcessesByName(ActiveAppsList.SelectedItem.ToString());
-
-            foreach (var process in processes)
-            {
-                if (process.Id == foregroundProcessId)
-                {
-                    Console.WriteLine("The process is running.");
-                }
-            }
-        }
-
+        
         _dispatcherTimer = new DispatcherTimer();
         _dispatcherTimer.Interval = TimeSpan.FromSeconds(1); // intervalul dintre tick-uri
         _dispatcherTimer.Tick += DispatcherTimer_Tick;
